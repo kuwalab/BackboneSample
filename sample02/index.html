@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+ <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Backbone.js - サンプル02</title>
+ </head>
+ <body>
+  <div id="app">
+   <input type="button" value="+" id="plus"><input type="button" value="-" id="minus"><br>
+   <span id="output"></span>
+  <div>
+<script src="../js/lib/jquery-1.11.0.min.js"></script>
+<script src="../js/lib/underscore-1.6.0.min.js"></script>
+<script src="../js/lib/backbone-1.1.2.min.js"></script>
+<script>
+var CountModel = Backbone.Model.extend({
+  defaults: {
+    count: 0
+  },
+  plus: function() {
+    var count = this.get('count') + 1;
+    console.log(count);
+    this.set('count', count);
+  },
+  minus: function() {
+    var count = this.get('count') - 1;
+    console.log(count);
+    this.set('count', count);
+  }
+});
+
+var countModel = new CountModel();
+
+var AppView = Backbone.View.extend({
+  el: '#app',
+  events: {
+    'click #plus': 'onClickPlus',
+    'click #minus': 'onClickMinus'
+  },
+  onClickPlus: function() {
+    console.log('plus');
+    countModel.plus();
+  },
+  onClickMinus: function() {
+    console.log('minus');
+    countModel.minus();
+  }
+});
+
+var CountView = Backbone.View.extend({
+  el: '#output',
+  initialize: function() {
+    this.listenTo(this.model, 'change', this.onChange);
+  },
+  onChange: function() {
+    this.render();
+  },
+  render: function() {
+    this.$el.text(this.model.get('count'));
+    return this;
+  }
+});
+
+var countView = new CountView({
+  model: countModel
+});
+
+var appView = new AppView();
+</script>
+ </body>
+</html>
