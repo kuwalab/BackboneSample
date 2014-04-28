@@ -35,7 +35,7 @@ var AppView = Backbone.View.extend({
   },
   onInput: function(event) {
     console.log(this.$input.val());
-    this.model.setText(this.$input.val());
+    inputModel.setText(this.$input.val());
   }
 });
 
@@ -53,9 +53,7 @@ var OutputView = Backbone.View.extend({
   }
 });
 
-new AppView({
-  model: inputModel
-});
+new AppView({});
 
 new OutputView({
   model: inputModel
