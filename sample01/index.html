@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+ <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Backbone.js - サンプル01</title>
+ </head>
+ <body>
+  <div id="app">
+   <input type="text" size="10" id="input"><br>
+   <span id="output"></span>
+  <div>
+<script src="../js/lib/jquery-1.11.0.min.js"></script>
+<script src="../js/lib/underscore-1.6.0.min.js"></script>
+<script src="../js/lib/backbone-1.1.2.min.js"></script>
+<script>
+var InputModel = Backbone.Model.extend({
+  defaults: {
+    text: ''
+  },
+  setText: function(inputText) {
+    this.set('text', inputText);
+  }
+});
+
+var inputModel = new InputModel();
+
+var AppView = Backbone.View.extend({
+  el: '#app',
+  events: {
+    'keyup #input': 'onInput'
+  },
+  initialize: function() {
+    this.$input = this.$('#input');
+  },
+  onInput: function(event) {
+    console.log(this.$input.val());
+    this.model.setText(this.$input.val());
+  }
+});
+
+var OutputView = Backbone.View.extend({
+  el: '#output',
+  initialize: function() {
+    this.listenTo(this.model, 'change', this.onChangeInput);
+  },
+  onChangeInput: function() {
+    this.render();
+  },
+  render: function() {
+    this.$el.text(this.model.get('text'));
+    return this;
+  }
+});
+
+new AppView({
+  model: inputModel
+});
+
+new OutputView({
+  model: inputModel
+});
+</script>
+ </body>
+</html>
