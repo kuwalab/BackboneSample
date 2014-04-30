@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+ <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Backbone.js - サンプル04</title>
+ </head>
+ <body>
+  <div id="app">
+   <input type="text" size="40" id="input" placeholder="todoを入力してenter">
+   <ul id="todoList"></ul>
+  <div>
+<script src="../js/lib/jquery-1.11.0.min.js"></script>
+<script src="../js/lib/underscore-1.6.0.min.js"></script>
+<script src="../js/lib/backbone-1.1.2.min.js"></script>
+<script type="text/template" id="item-todo">
+<li><%- text %><input type="button" value="削除"></li>
+</script>
+<script>
+var TodoModel = Backbone.Model.extend({
+});
+
+var TodoList = Backbone.Collection.extend({
+  model: TodoModel
+});
+
+var todos = new TodoList();
+
+var TodoView = Backbone.View.extend({
+  tagName: 'li',
+  template: _.template($('#item-todo').html()),
+  events: {
+    'click input': 'clear'
+  },
+  initialize: function() {
+    this.listenTo(this.model, 'destroy', this.remove);
+  },
+  render: function() {
+    this.$el.html(this.template(this.model.toJSON()));
+    return this;
+  },
+  clear: function() {
+    this.model.destroy();
+  }
+});
+
+var AppView = Backbone.View.extend({
+  el: '#app',
+  events: {
+    'keypress #input': 'onKeyPress'
+  },
+  initialize: function() {
+    this.$input = this.$('#input');
+    this.$todoList = this.$('#todoList');
+    this.listenTo(todos, 'add', this.addModel);
+  },
+  onKeyPress: function(event) {
+    var text = this.$input.val();
+    if (event.which == 13 && text.trim() != '') {
+      todos.add({ text: text });
+      this.$input.val('');
+    }
+  },
+  addModel: function(model) {
+    var todoView = new TodoView({ model: model });
+    this.$todoList.append(todoView.render().el);
+  }
+});
+
+var appView = new AppView();
+</script>
+ </body>
+</html>
